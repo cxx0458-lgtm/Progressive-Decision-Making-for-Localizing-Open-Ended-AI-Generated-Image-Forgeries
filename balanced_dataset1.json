@@ -1,0 +1,30 @@
+[
+    [
+        "ManiDataset",
+        "/home/bkai/datasets/CASIA2.0"
+    ],
+    [
+        "JsonDataset",
+        "/home/bkai/datasets/FantasticReality_v1/FantasticReality_new.json"
+    ],
+    [
+        "ManiDataset",
+        "/home/bkai/datasets/IMD_20_1024"
+    ],
+    [
+        "JsonDataset",
+        "/home/bkai/datasets/tampcoco/sp_COCO_list_new.json"
+    ],
+    [
+        "JsonDataset",
+        "/home/bkai/datasets/tampcoco/cm_COCO_list_new.json"
+    ],
+    [
+        "JsonDataset",
+        "/home/bkai/datasets/tampcoco/bcm_COCO_list_new.json"
+    ],
+    [
+        "JsonDataset",
+        "/home/bkai/datasets/tampcoco/bcmc_COCO_list_new.json"
+    ]
+]

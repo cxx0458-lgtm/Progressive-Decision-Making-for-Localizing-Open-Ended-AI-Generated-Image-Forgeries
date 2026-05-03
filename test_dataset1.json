@@ -1,0 +1,6 @@
+{
+    "AutoSplice_100": "/home/bkai/datasets/AutoSplice_JPEG100_test",
+    "sagid": "/home/bkai/datasets/sagid/sagid_10_percent/test",
+    "NIST16_1024": "/home/bkai/datasets/NIST16_1024",
+    "CASIAv1": "/home/bkai/datasets/CASIA1.0"
+}
