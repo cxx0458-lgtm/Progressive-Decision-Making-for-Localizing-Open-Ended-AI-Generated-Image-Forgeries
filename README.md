@@ -1,20 +1,45 @@
-Progressive Decision-Making for Localizing Open-Ended AI-Generated Image Forgeries
-========
+# Progressive Decision-Making for Localizing Open-Ended AI-Generated Image Forgeries
 
-This repository contains the PyTorch implementation of our paper: **"Progressive Decision-Making for Localizing Open-Ended AI-Generated Image Forgeries"**.
+This repository contains the official PyTorch implementation of:
 
-This work focuses on pixel-level localization of open-ended AI-generated image forgeries. The code is developed based on the Mesorch / IMDLBenCo-style image manipulation localization framework, and introduces a progressive decision-making mechanism to improve localization robustness for AI-generated manipulation scenarios.
+**Progressive Decision-Making for Localizing Open-Ended AI-Generated Image Forgeries**
 
-**Note:**  
-This project is built upon [IMDLBenCo](https://github.com/scu-zjz/IMDLBenCo) and Mesorch-style training/testing pipelines. For dataset format, environment details, and additional framework-related issues, please also refer to the original IMDLBenCo/Mesorch repositories.
+This work proposes a progressive decision-making framework for pixel-level localization of open-ended AI-generated image forgeries. The proposed method progressively refines localization states through evidence-guided refinement, improving robustness under both traditional and AI-generated manipulation scenarios.
+
+The code is developed based on the IMDLBenCo and Mesorch frameworks.
+
+---
+
+## Framework
+
+<p align="center">
+<img src="images/framework.png" width="900">
+</p>
+
+The proposed framework contains two main components:
+
+- **Decision Evidence Projector**: extracts manipulation-related evidence from mesoscopic features and generates boundary-aware prior information.
+- **Evidence-Guided Mamba**: progressively updates localization states through evidence-guided refinement.
+
+The localization process is gradually refined from the initial state to the final prediction.
+
+---
+
+## Main Results
+
+<p align="center">
+<img src="images/main_results.png" width="1000">
+</p>
+
+The proposed method achieves competitive performance on both traditional manipulation datasets and AI-generated manipulation datasets.
+
+---
 
 ## Environment
-<details>
-<summary><b>Click to expand</b></summary>
 
-The environment used in our experiments was mainly configured by installing IMDLBenCo first, followed by several additional dependencies required by the progressive refinement module.
+The experiments are conducted based on the IMDLBenCo framework.
 
-A typical setup is:
+A typical environment setup is:
 
 ```bash
 conda create -n mesorch python=3.10
@@ -25,70 +50,35 @@ pip install imdlbenco
 pip install "numpy<2"
 ```
 
-Then install the additional packages required by the model, such as Mamba-related libraries and other common dependencies:
+Additional dependencies for the proposed module:
 
 ```bash
 pip install mamba-ssm causal-conv1d
-pip install opencv-python pillow tqdm tensorboard albumentations scikit-learn
 ```
 
-The exact package versions may depend on your CUDA and PyTorch versions. If installation of `mamba-ssm` or `causal-conv1d` fails, please install the version compatible with your local CUDA/PyTorch environment.
+Other common dependencies can be installed according to the requirements of IMDLBenCo.
 
-</details>
-
-## File Structure
-
-```plaintext
-Progressive-Decision-Making-for-Localizing-Open-Ended-AI-Generated-Image-Forgeries/
-├── progressive_mesorch.py       # Proposed model
-├── train.py                     # Training script
-├── test.py                      # Testing script
-├── balanced_dataset1.json       # Training configuration for Protocol I
-├── balanced_dataset2.json       # Training configuration for Protocol II
-├── test_dataset1.json           # Testing configuration for Protocol I
-├── test_dataset2.json           # Testing configuration for Protocol II
-├── finetune_protocol1.sh        # Fine-tuning script for Protocol I
-├── finetune_protocol2.sh        # Fine-tuning script for Protocol II
-├── test_mesorch_f1.sh           # Testing script for standard F1-score
-├── test_mesorch_pf1.sh          # Testing script for Permute F1-score
-├── LICENSE
-└── README.md
-```
+---
 
 ## Dataset Preparation
-<details>
-<summary><b>Click to expand</b></summary>
 
-The dataset paths are specified by JSON files.
+The dataset paths are configured through JSON files:
 
-- `balanced_dataset1.json`: training configuration for Protocol I.
-- `balanced_dataset2.json`: training configuration for Protocol II.
-- `test_dataset1.json`: testing configuration for Protocol I.
-- `test_dataset2.json`: testing configuration for Protocol II.
+```text
+balanced_dataset1.json      # Protocol I training
+balanced_dataset2.json      # Protocol II training
 
-Please modify the paths in these JSON files according to your local dataset location.
-
-A typical JSON format is:
-
-```json
-{
-  "DatasetName": "/path/to/dataset/or/json/file"
-}
+test_dataset1.json          # Protocol I testing
+test_dataset2.json          # Protocol II testing
 ```
 
-Each image should have a corresponding binary ground-truth mask for pixel-level manipulation localization.
+Please modify the dataset paths in these files according to your local environment.
 
-</details>
+---
 
-## Training Instructions
-<details>
-<summary><b>Click to expand</b></summary>
-
-Before training, please check and modify the dataset paths and checkpoint paths in the shell scripts.
+## Training
 
 ### Protocol I
-
-Protocol I uses `balanced_dataset1.json` as the training configuration.
 
 ```bash
 sh finetune_protocol1.sh
@@ -96,75 +86,70 @@ sh finetune_protocol1.sh
 
 ### Protocol II
 
-Protocol II uses `balanced_dataset2.json` as the training configuration. This setting introduces AI-generated manipulation data during training.
-
 ```bash
 sh finetune_protocol2.sh
 ```
 
-</details>
+Before training, please configure the dataset paths, pretrained weights, and output directories in the corresponding scripts.
 
-## Testing Instructions
-<details>
-<summary><b>Click to expand</b></summary>
+---
 
-Before testing, please modify the checkpoint path and testing dataset path in the corresponding shell script.
+## Testing
 
-### Standard F1-score
+### Standard F1
 
 ```bash
 sh test_mesorch_f1.sh
 ```
 
-### Permute F1-score
+### Permute F1
 
 ```bash
 sh test_mesorch_pf1.sh
 ```
 
-The testing dataset can be switched by modifying `--test_data_json` in the shell script:
+Modify the checkpoint path and test dataset configuration before evaluation.
 
-- `test_dataset1.json` for Protocol I.
-- `test_dataset2.json` for Protocol II.
+---
 
-</details>
+## File Structure
 
-## Model
-
-The proposed model is implemented in:
-
-```plaintext
-progressive_mesorch.py
+```text
+.
+├── progressive_mesorch.py
+├── train.py
+├── test.py
+├── balanced_dataset1.json
+├── balanced_dataset2.json
+├── test_dataset1.json
+├── test_dataset2.json
+├── finetune_protocol1.sh
+├── finetune_protocol2.sh
+├── test_mesorch_f1.sh
+├── test_mesorch_pf1.sh
+├── images/
+│   ├── framework.png
+│   └── main_results.png
+├── LICENSE
+└── README.md
 ```
 
-The registered model name is:
-
-```plaintext
-ProgressiveMesorch
-```
-
-Please make sure the model name in the shell scripts is consistent with the registered name.
-
-## Checkpoints
-
-Pretrained checkpoints are not included in this repository due to file size limitations.
-
-Please place your checkpoints in the corresponding checkpoint directory and modify `--checkpoint_path` in the testing script.
+---
 
 ## Citation
 
-If you find this repository useful, please consider citing our paper:
+If you find this work useful, please consider citing our paper:
 
 ```bibtex
 @article{hou2026progressive,
   title={Progressive Decision-Making for Localizing Open-Ended AI-Generated Image Forgeries},
   author={Hou, Jingyi and Chen, Xiaoxia and Zhou, Leyu and Wang, Zhichuang and Liu, Zhijie},
-  journal={IEEE Transactions on Dependable and Secure Computing},
+  journal={arXiv preprint arXiv:XXXX.XXXXX},
   year={2026}
 }
 ```
 
-The citation information will be updated after publication.
+---
 
 ## License
 
